@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudShop — Управління магазином</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app">
+
+    <!-- Бокове меню -->
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-icon">C</div>
+            <div>
+                <h2>CloudShop</h2>
+                <span>Cloud management</span>
+            </div>
+        </div>
+
+        <div class="menu-label">МЕНЮ</div>
+
+        <nav>
+            <button class="nav-btn active" data-page="dashboard">
+                <span>▦</span> Головна
+            </button>
+
+            <button class="nav-btn" data-page="products">
+                <span>▧</span> Товари
+            </button>
+
+            <button class="nav-btn" data-page="orders">
+                <span>▤</span> Замовлення
+            </button>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="cloud-status">
+                <div class="status-dot"></div>
+                <div>
+                    <strong>Cloud database</strong>
+                    <small>Supabase connected</small>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Основна область -->
+    <main class="main">
+
+        <header class="topbar">
+            <div>
+                <h1 id="page-title">Головна</h1>
+                <p id="page-subtitle">Огляд роботи магазину</p>
+            </div>
+
+            <div class="topbar-right">
+                <div class="date-label" id="current-date"></div>
+                <div class="avatar">CS</div>
+            </div>
+        </header>
+
+        <!-- Головна -->
+        <section class="page active" id="dashboard-page">
+
+            <div class="welcome">
+                <div>
+                    <h2>Вітаємо у CloudShop 👋</h2>
+                    <p>Управління магазином та даними у хмарі.</p>
+                </div>
+                <button class="primary-btn" onclick="openOrderModal()">
+                    + Нове замовлення
+                </button>
+            </div>
+
+            <div class="stats-grid">
+
+                <div class="stat-card">
+                    <div class="stat-icon purple">▧</div>
+                    <span>Всього товарів</span>
+                    <h2 id="stat-products">0</h2>
+                    <small>У базі даних</small>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon blue">▤</div>
+                    <span>Всього замовлень</span>
+                    <h2 id="stat-orders">0</h2>
+                    <small>Збережено у хмарі</small>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon green">₴</div>
+                    <span>Сума замовлень</span>
+                    <h2 id="stat-revenue">0 ₴</h2>
+                    <small>Загальна вартість</small>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon orange">!</div>
+                    <span>Мало товару</span>
+                    <h2 id="stat-low-stock">0</h2>
+                    <small>Залишок менше 5</small>
+                </div>
+
+            </div>
+
+            <div class="section-card">
+                <div class="section-header">
+                    <div>
+                        <h3>Останні замовлення</h3>
+                        <p>Недавно створені замовлення</p>
+                    </div>
+
+                    <button class="secondary-btn" onclick="navigate('orders')">
+                        Усі замовлення →
+                    </button>
+                </div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Клієнт</th>
+                                <th>Дата</th>
+                                <th>Сума</th>
+                                <th>Статус</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recent-orders"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Товари -->
+        <section class="page" id="products-page">
+
+            <div class="section-card">
+
+                <div class="section-header">
+                    <div>
+                        <h3>Каталог товарів</h3>
+                        <p>Управління товарами у хмарній базі</p>
+                    </div>
+
+                    <button class="primary-btn" onclick="openProductModal()">
+                        + Додати товар
+                    </button>
+                </div>
+
+                <div class="toolbar">
+                    <input
+                        type="text"
+                        id="product-search"
+                        placeholder="Пошук товарів..."
+                    >
+
+                    <select id="stock-filter">
+                        <option value="all">Усі товари</option>
+                        <option value="available">В наявності</option>
+                        <option value="low">Мало товару</option>
+                        <option value="empty">Немає в наявності</option>
+                    </select>
+                </div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Назва товару</th>
+                                <th>Опис</th>
+                                <th>Ціна</th>
+                                <th>Кількість</th>
+                                <th>Дії</th>
+                            </tr>
+                        </thead>
+                        <tbody id="products-table"></tbody>
+                    </table>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- Замовлення -->
+        <section class="page" id="orders-page">
+
+            <div class="section-card">
+
+                <div class="section-header">
+                    <div>
+                        <h3>Замовлення</h3>
+                        <p>Перегляд та управління замовленнями</p>
+                    </div>
+
+                    <button class="primary-btn" onclick="openOrderModal()">
+                        + Створити замовлення
+                    </button>
+                </div>
+
+                <div class="toolbar">
+                    <input
+                        type="text"
+                        id="order-search"
+                        placeholder="Пошук за клієнтом або ID..."
+                    >
+
+                    <select id="order-filter">
+                        <option value="all">Усі статуси</option>
+                        <option value="Нове">Нове</option>
+                        <option value="В обробці">В обробці</option>
+                        <option value="Виконане">Виконане</option>
+                        <option value="Скасоване">Скасоване</option>
+                    </select>
+                </div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Клієнт</th>
+                                <th>Email</th>
+                                <th>Дата</th>
+                                <th>Сума</th>
+                                <th>Статус</th>
+                                <th>Дії</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-table"></tbody>
+                    </table>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+</div>
+
+<!-- Модальне вікно товару -->
+<div class="modal-overlay" id="product-modal">
+    <div class="modal">
+        <div class="modal-header">
+            <h2 id="product-modal-title">Новий товар</h2>
+            <button class="close-btn" onclick="closeModal('product-modal')">×</button>
+        </div>
+
+        <form id="product-form">
+            <input type="hidden" id="product-id">
+
+            <label>Назва товару</label>
+            <input type="text" id="product-name" required>
+
+            <label>Опис</label>
+            <textarea id="product-description"></textarea>
+
+            <div class="form-row">
+                <div>
+                    <label>Ціна (грн)</label>
+                    <input type="number" id="product-price" min="0" step="0.01" required>
+                </div>
+
+                <div>
+                    <label>Кількість</label>
+                    <input type="number" id="product-quantity" min="0" required>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="secondary-btn"
+                    onclick="closeModal('product-modal')">Скасувати</button>
+
+                <button type="submit" class="primary-btn">Зберегти</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Модальне вікно замовлення -->
+<div class="modal-overlay" id="order-modal">
+    <div class="modal">
+        <div class="modal-header">
+            <h2>Нове замовлення</h2>
+            <button class="close-btn" onclick="closeModal('order-modal')">×</button>
+        </div>
+
+        <form id="order-form">
+
+            <label>Ім'я клієнта</label>
+            <input type="text" id="customer-name" required>
+
+            <label>Email клієнта</label>
+            <input type="email" id="customer-email">
+
+            <div class="form-group">
+    <label>Товари в замовленні</label>
+
+    <div id="order-items"></div>
+
+    <button type="button" id="add-order-item" class="btn btn-secondary">
+        + Додати товар
+    </button>
+</div>
+
+<div class="form-group">
+    <label>Загальна сума</label>
+    <h3 id="order-total">0 ₴</h3>
+</div>
+
+            <div class="modal-actions">
+                <button type="button" class="secondary-btn"
+                    onclick="closeModal('order-modal')">Скасувати</button>
+
+                <button type="submit" class="primary-btn">Створити замовлення</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Повідомлення -->
+<div id="toast" class="toast"></div>
+
+<script type="module" src="app.js"></script>
+
+</body>
+</html>
